@@ -1,0 +1,77 @@
+<?php
+
+App::uses('AppHelper', 'View/Helper');
+
+class GoogleMapHelper extends AppHelper {
+
+	public $helpers = array('Html');
+
+	public $container;
+
+	public $centerLat = -6.192438;
+	
+	public $centerLong = 106.847534;
+
+	public $apiKey;
+
+	public $zoom = 9;
+
+	public function __construct(View $view, $settings = array()) {
+		parent::__construct($view, $settings);
+		if (is_array($settings)) {
+			$args = array_map('strtolower', $settings);
+			$this->_parseAndSaveArgs($args);
+		}
+	}
+
+	public function renderScript($args = null) {
+		if (!empty($args)) {
+			$args = array_map('strtolower', $args);
+			$this->_parseAndSaveArgs($args);
+		}
+		$this->_initializeMapScript();
+	}
+
+	protected function _initializeMapScript() {
+		$script =<<<EOF
+		function initializeMap() {
+			GoogleMap.mapOptions = {
+				center: new google.maps.LatLng($this->centerLat, $this->centerLong),
+				zoom: $this->zoom,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+
+			GoogleMap.mapConfig = {
+				container: '$this->container'
+			}
+
+			GoogleMap.Map.initialize();
+		}
+
+		$(document).ready(function() {
+			initializeMap();
+		});
+EOF;
+		echo $this->Html->scriptBlock($script, array(
+			'inline' => false,
+		));
+	}
+
+	protected function _parseAndSaveArgs($args = array()) {
+		if (!is_array($args)) {
+			return false;
+		}
+		if (array_key_exists('api_key', $args)) {
+			$this->apiKey = $args['api_key'];
+		}
+		if (array_key_exists('container_id', $args)) {
+			$this->container = $args['container_id'];
+		}
+		if (array_key_exists('zoom', $args)) {
+			$this->zoom= $args['zoom'];
+		}
+		if (array_key_exists('container', $args)) {
+			$this->container = $args['container'];
+		}
+	}
+}

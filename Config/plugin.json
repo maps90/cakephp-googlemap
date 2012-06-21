@@ -1,0 +1,7 @@
+{
+	"name" : "GoogleMap",
+	"description" : "Google Map V3 wrapper",
+	"author" : "Raymond",
+	"authorEmail" : "raymond@xintesa.com",
+	"dependencies" : {}
+}
