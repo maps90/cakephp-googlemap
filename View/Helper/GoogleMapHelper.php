@@ -32,16 +32,39 @@ class GoogleMapHelper extends AppHelper {
 		$this->_initializeMapScript();
 	}
 
+	public function configureMapOptions($args = null) {
+		$args = array_map('strtolower', $args);
+		$script =<<<EOF
+		GoogleMap.Option.params = {
+			center: new google.maps.LatLng($this->centerLat, $this->centerLong),
+			zoom: $this->zoom,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		}
+EOF;
+		echo $this->Html->scriptBlock($script, array('inline' => false));
+	}
+
+	public function configureMapSettings($args = null) {
+		$args = array_map('strtolower', $args);
+		$this->_parseAndSaveArgs($args);
+		$script =<<<EOF
+		GoogleMap.Option.params = {
+			container: '$this->container';
+		}
+EOF;
+		echo $this->Html->scriptBlock($script, array('inline' => false));
+	}
+
 	protected function _initializeMapScript() {
 		$script =<<<EOF
 		function initializeMap() {
-			GoogleMap.mapOptions = {
+			GoogleMap.Option.params = {
 				center: new google.maps.LatLng($this->centerLat, $this->centerLong),
 				zoom: $this->zoom,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
 
-			GoogleMap.mapConfig = {
+			GoogleMap.Map.config = {
 				container: '$this->container'
 			}
 
