@@ -16,19 +16,23 @@ if (typeof GoogleMap == "undefined") {
 
 GoogleMap.map;
 
-GoogleMap.mapOptions;
-
-GoogleMap.mapConfig;
-
 GoogleMap.namespace('GoogleMap.Map');
 
-GoogleMap.Map.initialize = function() {
-	var container = GoogleMap.mapConfig.container;
+GoogleMap.Map.config;
 
-	GoogleMap.map = new google.maps.Map(document.getElementById(container), GoogleMap.mapOptions);
+GoogleMap.Map.initialize = function() {
+	var container = GoogleMap.Map.config.container;
+
+	GoogleMap.map = new google.maps.Map(document.getElementById(container), GoogleMap.Option.params);
 }
 
 GoogleMap.namespace('GoogleMap.Marker');
 
 GoogleMap.Marker.populate = function() {
 }
+
+GoogleMap.namespace('GoogleMap.Option');
+
+GoogleMap.Option.params;
+
+GoogleMap.namespace('GoogleMap.Util');
