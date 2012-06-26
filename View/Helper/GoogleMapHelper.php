@@ -93,9 +93,6 @@ EOF;
 		if (!is_array($args)) {
 			return false;
 		}
-		if (array_key_exists('api_key', $args)) {
-			$this->apiKey = $args['api_key'];
-		}
 		if (array_key_exists('container_id', $args)) {
 			$this->container = $args['container_id'];
 		}
