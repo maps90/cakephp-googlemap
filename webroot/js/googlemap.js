@@ -28,7 +28,23 @@ GoogleMap.Map.initialize = function() {
 
 GoogleMap.namespace('GoogleMap.Marker');
 
-GoogleMap.Marker.populate = function() {
+GoogleMap.Marker.markers = new Array();
+
+GoogleMap.Marker.populate = function(params) {
+	for (var i=0;i<params.length;i++) {
+		GoogleMap.Marker.add(params[i]);
+	}
+}
+
+GoogleMap.Marker.add = function(params) {
+	var latLng = new google.maps.LatLng(params.markerLat, params.markerLong);
+	var marker = new google.maps.Marker({
+		position: latLng,
+		title: params.markerTitle,
+		icon: params.markerIcon,
+	});
+	marker.setMap(GoogleMap.map);
+	GoogleMap.Marker.markers.push(marker);
 }
 
 GoogleMap.namespace('GoogleMap.Option');
