@@ -57,6 +57,10 @@ EOF;
 		echo $this->Html->scriptBlock($script, array('inline' => false));
 	}
 
+	public function configureMapMarkers($markers = null) {
+		$this->_markers = json_encode($markers);
+	}
+
 	protected function _initializeMapScript() {
 		$script =<<<EOF
 		function initializeMap() {
@@ -65,16 +69,19 @@ EOF;
 				zoom: $this->zoom,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
-
 			GoogleMap.Map.config = {
 				container: '$this->container'
 			}
-
 			GoogleMap.Map.initialize();
+		}
+
+		function initializeMarker() {
+			GoogleMap.Marker.populate($this->_markers);
 		}
 
 		$(document).ready(function() {
 			initializeMap();
+			initializeMarker();
 		});
 EOF;
 		echo $this->Html->scriptBlock($script, array(
