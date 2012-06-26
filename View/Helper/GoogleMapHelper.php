@@ -16,6 +16,8 @@ class GoogleMapHelper extends AppHelper {
 
 	public $zoom = 9;
 
+	protected $_markers = array();
+
 	public function __construct(View $view, $settings = array()) {
 		parent::__construct($view, $settings);
 		if (is_array($settings)) {
