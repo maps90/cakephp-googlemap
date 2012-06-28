@@ -12,11 +12,11 @@ class GoogleMapHelper extends AppHelper {
 	
 	public $centerLong = 106.847534;
 
-	public $apiKey;
-
 	public $zoom = 9;
 
 	protected $_markers = array();
+
+	protected $_styles = array();
 
 	public function __construct(View $view, $settings = array()) {
 		parent::__construct($view, $settings);
