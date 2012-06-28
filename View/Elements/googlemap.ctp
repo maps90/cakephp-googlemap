@@ -4,13 +4,25 @@
 	$parentStyle = !empty($parentStyle)?
 		$parentStyle : 'map-element';
 	$containerId = !empty($containerId)?
-		$containerId : 'mapcanvas';
+		$containerId : 'map-canvas';
 	$containerStyle = !empty($containerStyle)?
-		$containerStyle : 'mapcanvas';
+		$containerStyle : 'map-canvas';
 	$markers = !empty($markers)?
 		$markers : array();
-	$args = array('container' => $containerId);
+	$styles = !empty($styles)?
+		$styles : array();
+	/*
+	 * Examples of setting map style
+	 */
+	$styles = array(
+		'roadmap',
+		'terrain',
+		'satellite',
+		'hybrid',
+	);
+	$args = array('container_id' => $containerId);
 	$this->GoogleMap->configureMapMarkers($markers);
+	$this->GoogleMap->configureMapStyles($styles);
 	$this->GoogleMap->renderScript($args);
 ?>
 <div id="<?php echo $parentId; ?>" class="<?php echo $parentStyle; ?>">
