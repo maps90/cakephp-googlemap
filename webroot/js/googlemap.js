@@ -21,9 +21,9 @@ GoogleMap.namespace('GoogleMap.Map');
 GoogleMap.Map.config;
 
 GoogleMap.Map.initialize = function() {
-	var container = GoogleMap.Map.config.container;
-
-	GoogleMap.map = new google.maps.Map(document.getElementById(container), GoogleMap.Option.params);
+	GoogleMap.map = new google.maps.Map(document.getElementById(GoogleMap.Map.config.container), GoogleMap.Option.options);
+	GoogleMap.Style.setToMap();
+	GoogleMap.map.setMapTypeId(GoogleMap.Style.stylesIds[0]);
 }
 
 GoogleMap.namespace('GoogleMap.Marker');
