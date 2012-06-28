@@ -96,5 +96,3 @@ GoogleMap.Style.defaultStyle = {
 	terrain: google.maps.MapTypeId.TERRAIN,
 	hybrid: google.maps.MapTypeId.HYBRID,
 }
-
-GoogleMap.namespace('GoogleMap.Util');
