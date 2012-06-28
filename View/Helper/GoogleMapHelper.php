@@ -34,40 +34,29 @@ class GoogleMapHelper extends AppHelper {
 		$this->_initializeMapScript();
 	}
 
-	public function configureMapOptions($args = null) {
-		$args = array_map('strtolower', $args);
-		$script =<<<EOF
-		GoogleMap.Option.params = {
-			center: new google.maps.LatLng($this->centerLat, $this->centerLong),
-			zoom: $this->zoom,
-			mapTypeId: google.maps.MapTypeId.ROADMAP
-		}
-EOF;
-		echo $this->Html->scriptBlock($script, array('inline' => false));
-	}
-
-	public function configureMapSettings($args = null) {
-		$args = array_map('strtolower', $args);
-		$this->_parseAndSaveArgs($args);
-		$script =<<<EOF
-		GoogleMap.Option.params = {
-			container: '$this->container';
-		}
-EOF;
-		echo $this->Html->scriptBlock($script, array('inline' => false));
-	}
-
-	public function configureMapMarkers($markers = null) {
+	public function configureMapMarkers($markers) {
 		$this->_markers = json_encode($markers);
+	}
+
+	public function configureMapStyles($styles == null) {
+		if (empty($styles)) {
+			if (!empty($this->_styles)) {
+				$this->_styles = json_encode($this->_styles);
+			}
+			return;
+		}
+		$this->_styles = json_encode($styles);
 	}
 
 	protected function _initializeMapScript() {
 		$script =<<<EOF
 		function initializeMap() {
-			GoogleMap.Option.params = {
+			GoogleMap.Option.options= {
 				center: new google.maps.LatLng($this->centerLat, $this->centerLong),
 				zoom: $this->zoom,
-				mapTypeId: google.maps.MapTypeId.ROADMAP
+				mapTypeControlOptions: {
+					mapTypeIds: GoogleMap.Style.stylesIds
+				}
 			};
 			GoogleMap.Map.config = {
 				container: '$this->container'
@@ -79,7 +68,12 @@ EOF;
 			GoogleMap.Marker.populate($this->_markers);
 		}
 
+		function initializeStyle() {
+			GoogleMap.Style.parse($this->_styles);
+		}
+
 		$(document).ready(function() {
+			initializeStyle();
 			initializeMap();
 			initializeMarker();
 		});
@@ -98,9 +92,6 @@ EOF;
 		}
 		if (array_key_exists('zoom', $args)) {
 			$this->zoom= $args['zoom'];
-		}
-		if (array_key_exists('container', $args)) {
-			$this->container = $args['container'];
 		}
 	}
 }
