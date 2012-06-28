@@ -38,7 +38,7 @@ class GoogleMapHelper extends AppHelper {
 		$this->_markers = json_encode($markers);
 	}
 
-	public function configureMapStyles($styles == null) {
+	public function configureMapStyles($styles = null) {
 		if (empty($styles)) {
 			if (!empty($this->_styles)) {
 				$this->_styles = json_encode($this->_styles);
