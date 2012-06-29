@@ -17,6 +17,8 @@ class GoogleMapHelper extends AppHelper {
 
 	public $zoom = 9;
 
+	public $useDefaultMarker = true;
+
 	protected $_markers = array();
 
 	protected $_styles = array();
