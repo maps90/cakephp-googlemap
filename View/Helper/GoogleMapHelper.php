@@ -4,7 +4,10 @@ App::uses('AppHelper', 'View/Helper');
 
 class GoogleMapHelper extends AppHelper {
 
-	public $helpers = array('Html');
+	public $helpers = array(
+		'Html',
+		'GoogleMap.GoogleMapUtility',
+	);
 
 	public $container;
 
