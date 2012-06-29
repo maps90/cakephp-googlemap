@@ -37,38 +37,42 @@ class GoogleMapHelper extends AppHelper {
 	}
 
 	protected function _initializeMapScript() {
-		$scriptInitialize =<<<EOF
-		function initializeMap() {
+		$script =<<<EOF
+		var initializeMap = function() {
 			GoogleMap.Map.initialize();
 		}
-
-		function initializeStyle() {
+		var initializeStyle = function() {
 			GoogleMap.Style.parse($this->_styles);
 		}
+EOF;
+		$this->Js->buffer($script);
 
+		if ($this->useDefaultMarker && !empty($this->_markers)) {
+			$script =<<<EOF
+		var initializeMarker = function() {
+			GoogleMap.Marker.populate($this->_markers);
+		}
+EOF;
+			$this->Js->buffer($script);
+			$script =<<<EOF
+		$(document).ready(function() {
+			initializeStyle();
+			initializeMap();
+			initializeMarker();
+		});
+EOF;
+		} else {
+			$script =<<<EOF
 		$(document).ready(function() {
 			initializeStyle();
 			initializeMap();
 		});
-
-EOF;
-		echo $this->Html->scriptBlock($scriptInitialize, array(
-			'inline' => false,
-		));
-
-		if ($this->useDefaultMarker) {
-			$scriptMarker =<<<EOF
-			function initializeMarker() {
-				GoogleMap.Marker.populate($this->_markers);
-			}
-			$(document).ready(function() {
-				initializeMarker();
-			});
-EOF;
-			echo $this->Html->scriptBlock($scriptMarker, array(
-				'inline' => false,
-			));
 		}
+		$this->Js->buffer($script);
+		$this->Js->writeBuffer(array(
+			'inline' => false,
+			'onDomReady' => false,
+		));
 	}
 
 	protected function _handleParameters($config, $options, $styles, $markers) {
@@ -86,6 +90,10 @@ EOF;
 		if (!empty($markers)) {
 			$this->configureMapMarkers($markers);
 		}
+		$this->Js->writeBuffer(array(
+			'inline' => false,
+			'onDomReady' => false,
+		));
 	}
 
 	public function configureMapStyles($styles) {
@@ -101,16 +109,14 @@ EOF;
 			return false;
 		}
 		if (array_key_exists('container_id', $config)) {
-			$this->container = $args['container_id'];
+			$this->container = $config['container_id'];
 		}
 		$script =<<<EOF
-			GoogleMap.Map.config = {
-				container: '$this->container'
-			}
+		GoogleMap.Map.config = {
+			container: '$this->container'
+		}
 EOF;
-		echo $this->Html->scriptBlock($script, array(
-			'inline' => false,
-		));
+		$this->Js->buffer($script);
 	}
 
 	protected function _parseAndSaveOptions($options) {
@@ -127,16 +133,14 @@ EOF;
 			$this->centerLong= $options['center_long'];
 		}
 		$script =<<<EOF
-			GoogleMap.Option.options= {
-				center: new google.maps.LatLng($this->centerLat, $this->centerLong),
-				zoom: $this->zoom,
-				mapTypeControlOptions: {
-					mapTypeIds: GoogleMap.Style.stylesIds
-				}
-			};
+		GoogleMap.Option.options = {
+			center: new google.maps.LatLng($this->centerLat, $this->centerLong),
+			zoom: $this->zoom,
+			mapTypeControlOptions: {
+				mapTypeIds: GoogleMap.Style.stylesIds
+			}
+		};
 EOF;
-		echo $this->Html->scriptBlock($script, array(
-			'inline' => false,
-		));
+		$this->Js->buffer($script);
 	}
 }
