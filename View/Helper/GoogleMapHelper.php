@@ -26,8 +26,7 @@ class GoogleMapHelper extends AppHelper {
 	public function __construct(View $view, $settings = array()) {
 		parent::__construct($view, $settings);
 		if (is_array($settings)) {
-			$args = array_map('strtolower', $settings);
-			$this->_parseAndSaveArgs($args);
+			$settings = array_map('strtolower', $settings);
 		}
 	}
 
