@@ -31,46 +31,15 @@ class GoogleMapHelper extends AppHelper {
 		}
 	}
 
-	public function renderScript($args = null) {
-		if (!empty($args)) {
-			$args = array_map('strtolower', $args);
-			$this->_parseAndSaveArgs($args);
-		}
+	public function renderScript($config = null, $options = null, $styles = null, $markers = null) {
+		$this->_handleParameters($config, $options, $styles, $markers);
 		$this->_initializeMapScript();
 	}
 
-	public function configureMapMarkers($markers) {
-		$this->_markers = json_encode($markers);
-	}
-
-	public function configureMapStyles($styles = null) {
-		if (empty($styles)) {
-			if (!empty($this->_styles)) {
-				$this->_styles = json_encode($this->_styles);
-			}
-			return;
-		}
-		$this->_styles = json_encode($styles);
-	}
-
 	protected function _initializeMapScript() {
-		$script =<<<EOF
+		$scriptInitialize =<<<EOF
 		function initializeMap() {
-			GoogleMap.Option.options= {
-				center: new google.maps.LatLng($this->centerLat, $this->centerLong),
-				zoom: $this->zoom,
-				mapTypeControlOptions: {
-					mapTypeIds: GoogleMap.Style.stylesIds
-				}
-			};
-			GoogleMap.Map.config = {
-				container: '$this->container'
-			}
 			GoogleMap.Map.initialize();
-		}
-
-		function initializeMarker() {
-			GoogleMap.Marker.populate($this->_markers);
 		}
 
 		function initializeStyle() {
