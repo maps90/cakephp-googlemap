@@ -9,19 +9,26 @@ class GoogleMapHelper extends AppHelper {
 		'GoogleMap.GoogleMapUtility',
 	);
 
-	public $container;
+	protected $_markerDefault = true;
 
-	public $centerLat = -6.192438;
-	
-	public $centerLong = 106.847534;
+	protected $_markerCluster = false;
 
-	public $zoom = 9;
+	protected $_config = array(
+		'container_id' => 'map-canvas'
+	);
 
-	public $useDefaultMarker = true;
+	protected $_options = array(
+		'center_lat' => -6.192438,
+		'center_long' => 106.847534,
+		'zoom' => 9,
+	);
+
+	protected $_styles = array(
+		'roadmap',
+		'satellite',
+	);
 
 	protected $_markers = array();
-
-	protected $_styles = array();
 
 	public function __construct(View $view, $settings = array()) {
 		parent::__construct($view, $settings);
