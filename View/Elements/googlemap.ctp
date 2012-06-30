@@ -43,9 +43,7 @@
 		$markers : $defaultMarkers;
 	$styles = !empty($styles)?
 		$styles : $defaultStyles;
-	$this->GoogleMap->configureMapMarkers($markers);
-	$this->GoogleMap->configureMapStyles($styles);
-	$this->GoogleMap->renderScript($config, $options);
+	$this->GoogleMap->renderScript($config, $options, $styles, $markers);
 ?>
 <div id="<?php echo $parentId; ?>" class="<?php echo $parentStyle; ?>">
 	<div id="<?php echo $containerId; ?>" class="<?php echo $containerStyle; ?>"/>
