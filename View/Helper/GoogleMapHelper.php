@@ -66,6 +66,7 @@ EOF;
 			initializeStyle();
 			initializeMap();
 		});
+EOF;
 		}
 		$this->Js->buffer($script);
 		$this->Js->writeBuffer(array(
