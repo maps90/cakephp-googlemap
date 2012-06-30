@@ -38,43 +38,38 @@ class GoogleMapHelper extends AppHelper {
 	}
 
 	public function renderScript($config = null, $options = null, $styles = null, $markers = null) {
-		$this->_handleParameters($config, $options, $styles, $markers);
-		$this->_initializeMapScript();
+		$this->_setParameters($config, $options, $styles, $markers);
+		$this->_renderInitializeScript();
+		$this->_renderMap();
 	}
 
-	protected function _initializeMapScript() {
+	protected function _renderMap() {
 		$script =<<<EOF
 		var initializeMap = function() {
 			GoogleMap.Map.initialize();
 		}
 		var initializeStyle = function() {
-			GoogleMap.Style.parse($this->_styles);
+			GoogleMap.Map.setStyle();
 		}
 EOF;
 		$this->Js->buffer($script);
-
-		if ($this->useDefaultMarker && !empty($this->_markers)) {
+		if (!empty($this->_markers) && $this->_markerDefault) {
 			$script =<<<EOF
 		var initializeMarker = function() {
-			GoogleMap.Marker.populate($this->_markers);
+			GoogleMap.Map.setMarker();
 		}
 EOF;
 			$this->Js->buffer($script);
-			$script =<<<EOF
-		$(document).ready(function() {
-			initializeStyle();
-			initializeMap();
-			initializeMarker();
-		});
-EOF;
-		} else {
-			$script =<<<EOF
-		$(document).ready(function() {
-			initializeStyle();
-			initializeMap();
-		});
-EOF;
 		}
+		$script =<<<EOF
+		$(document).ready(function() {
+			initializeMap();
+			initializeStyle();
+			if (typeof initializeMarker !== "undefined") {
+				initializeMarker();
+			}
+		});
+EOF;
 		$this->Js->buffer($script);
 		$this->Js->writeBuffer(array(
 			'inline' => false,
