@@ -4,10 +4,7 @@ App::uses('AppHelper', 'View/Helper');
 
 class GoogleMapHelper extends AppHelper {
 
-	public $helpers = array(
-		'Js',
-		'GoogleMap.GoogleMapUtility',
-	);
+	public $helpers = array('Js');
 
 	protected $_markerDefault = true;
 
