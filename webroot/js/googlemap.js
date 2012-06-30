@@ -22,13 +22,26 @@ GoogleMap.Map.config;
 
 GoogleMap.Map.initialize = function() {
 	GoogleMap.map = new google.maps.Map(document.getElementById(GoogleMap.Map.config.container), GoogleMap.Option.options);
+}
+
+GoogleMap.Map.setStyle = function() {
 	GoogleMap.Style.setToMap();
 	GoogleMap.map.setMapTypeId(GoogleMap.Style.stylesIds[0]);
+}
+
+GoogleMap.Map.setMarker = function() {
+	GoogleMap.Marker.setToMap();
 }
 
 GoogleMap.namespace('GoogleMap.Marker');
 
 GoogleMap.Marker.markers = new Array();
+
+GoogleMap.Marker.setToMap = function() {
+	for (var idx=0; idx<GoogleMap.Marker.markers.length; idx++) {
+		GoogleMap.Marker.markers[idx].setMap(GoogleMap.map);
+	}
+}
 
 GoogleMap.Marker.populate = function(params) {
 	for (var i=0;i<params.length;i++) {
@@ -43,7 +56,6 @@ GoogleMap.Marker.add = function(params) {
 		title: params.markerTitle,
 		icon: params.markerIcon,
 	});
-	marker.setMap(GoogleMap.map);
 	GoogleMap.Marker.markers.push(marker);
 }
 
