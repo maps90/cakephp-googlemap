@@ -21,9 +21,9 @@ GoogleMap.namespace('GoogleMap.Map');
 GoogleMap.Map.config;
 
 GoogleMap.Map.initialize = function() {
-	var container = GoogleMap.Map.config.container;
-
-	GoogleMap.map = new google.maps.Map(document.getElementById(container), GoogleMap.Option.params);
+	GoogleMap.map = new google.maps.Map(document.getElementById(GoogleMap.Map.config.container), GoogleMap.Option.options);
+	GoogleMap.Style.setToMap();
+	GoogleMap.map.setMapTypeId(GoogleMap.Style.stylesIds[0]);
 }
 
 GoogleMap.namespace('GoogleMap.Marker');
@@ -49,6 +49,50 @@ GoogleMap.Marker.add = function(params) {
 
 GoogleMap.namespace('GoogleMap.Option');
 
-GoogleMap.Option.params;
+GoogleMap.Option.options;
 
-GoogleMap.namespace('GoogleMap.Util');
+GoogleMap.namespace('GoogleMap.Style');
+
+GoogleMap.Style.styles = new Array();
+
+GoogleMap.Style.stylesIds = new Array();
+
+GoogleMap.Style.parse = function(params) {
+	for (styleName in params) {
+		if (params[styleName] == 'roadmap' ||
+			params[styleName] == 'satellite' ||
+			params[styleName] == 'hybrid' ||
+			params[styleName] == 'terrain'
+		) {
+			GoogleMap.Style.stylesIds.push(GoogleMap.Style.defaultStyle[params[styleName]]);
+			continue;
+		}
+		GoogleMap.Style.stylesIds.push(styleName);
+		GoogleMap.Style.styles.push(new google.maps.StyledMapType(
+			params[styleName],
+			{ name: styleName }
+		));
+	}
+}
+
+GoogleMap.Style.setToMap = function() {
+	var ids = GoogleMap.Style.stylesIds;
+	var styles = GoogleMap.Style.styles;
+	for (var idx=0;idx<ids.length;idx++) {
+		if (ids[idx] == 'roadmap' ||
+			ids[idx] == 'satellite' ||
+			ids[idx] == 'hybrid' ||
+			ids[idx] == 'terrain'
+		) {
+			continue;
+		}
+		GoogleMap.map.mapTypes.set(ids[idx], styles[idx]);
+	}
+}
+
+GoogleMap.Style.defaultStyle = {
+	roadmap: google.maps.MapTypeId.ROADMAP,
+	satellite: google.maps.MapTypeId.SATELLITE,
+	terrain: google.maps.MapTypeId.TERRAIN,
+	hybrid: google.maps.MapTypeId.HYBRID,
+}
