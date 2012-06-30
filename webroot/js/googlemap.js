@@ -108,3 +108,9 @@ GoogleMap.Style.defaultStyle = {
 	terrain: google.maps.MapTypeId.TERRAIN,
 	hybrid: google.maps.MapTypeId.HYBRID,
 }
+
+GoogleMap.namespace('GoogleMap.Cluster');
+
+GoogleMap.Cluster.cluster;
+
+GoogleMap.Cluster.options;
