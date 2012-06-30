@@ -77,20 +77,12 @@ EOF;
 		));
 	}
 
-	protected function _handleParameters($config, $options, $styles, $markers) {
-		if (!empty($config)) {
-			$args = array_map('strtolower', $config);
-			$this->_parseAndSaveConfig($config);
-		}
-		if (!empty($options)) {
-			$options = array_map('strtolower', $options);
-			$this->_parseAndSaveOptions($options);
-		}
-		if (!empty($styles)) {
-			$this->configureMapStyles($styles);
-		}
-		if (!empty($markers)) {
-			$this->configureMapMarkers($markers);
+	protected function _renderInitializeScript() {
+		$this->_bufferSetConfig();
+		$this->_bufferSetStyles();
+		$this->_bufferSetOptions();
+		if (!empty($this->_markers)) {
+			$this->_bufferSetMarkers();
 		}
 		$this->Js->writeBuffer(array(
 			'inline' => false,
@@ -98,51 +90,83 @@ EOF;
 		));
 	}
 
-	public function configureMapStyles($styles) {
-		$this->_styles = json_encode($styles);
-	}
-
-	public function configureMapMarkers($markers) {
-		$this->_markers = json_encode($markers);
-	}
-
-	protected function _parseAndSaveConfig($config) {
-		if (!is_array($config)) {
-			return false;
-		}
-		if (array_key_exists('container_id', $config)) {
-			$this->container = $config['container_id'];
-		}
+	protected function _bufferSetConfig() {
+		$container = $this->_config['container_id'];
 		$script =<<<EOF
 		GoogleMap.Map.config = {
-			container: '$this->container'
+			container: '$container'
 		}
 EOF;
 		$this->Js->buffer($script);
 	}
 
-	protected function _parseAndSaveOptions($options) {
-		if (!is_array($options)) {
-			return false;
-		}
-		if (array_key_exists('zoom', $options)) {
-			$this->zoom = $options['zoom'];
-		}
-		if (array_key_exists('center_lat', $options)) {
-			$this->centerLat= $options['center_lat'];
-		}
-		if (array_key_exists('center_long', $options)) {
-			$this->centerLong= $options['center_long'];
-		}
+	protected function _bufferSetOptions() {
+		$zoom = $this->_options['zoom'];
+		$centerLat = $this->_options['center_lat'];
+		$centerLong = $this->_options['center_long'];
 		$script =<<<EOF
 		GoogleMap.Option.options = {
-			center: new google.maps.LatLng($this->centerLat, $this->centerLong),
-			zoom: $this->zoom,
+			center: new google.maps.LatLng($centerLat, $centerLong),
+			zoom: $zoom,
 			mapTypeControlOptions: {
 				mapTypeIds: GoogleMap.Style.stylesIds
 			}
 		};
 EOF;
 		$this->Js->buffer($script);
+	}
+
+	protected function _bufferSetStyles() {
+		$this->_styles = json_encode($this->_styles);
+		$script =<<<EOF
+		GoogleMap.Style.parse($this->_styles);
+EOF;
+		$this->Js->buffer($script);
+	}
+
+	protected function _bufferSetMarkers() {
+		$this->_markers = json_encode($this->_markers);
+		$script =<<<EOF
+		GoogleMap.Marker.populate($this->_markers);
+EOF;
+		$this->Js->buffer($script);
+	}
+
+	protected function _setParameters($config, $options, $styles, $markers) {
+		$this->setMapConfig($config);
+
+		$this->setMapOptions($options);
+
+		$this->setMapStyles($styles);
+
+		$this->setMapMarkers($markers);
+	}
+
+	public function setMapStyles($styles) {
+		if (empty($styles)) {
+			return false;
+		}
+		$this->_styles = $styles;
+	}
+
+	public function setMapMarkers($markers) {
+		if (empty($markers)) {
+			return false;
+		}
+		$this->_markers = $markers;
+	}
+
+	public function setMapConfig($config) {
+		if (empty($config)) {
+			return false;
+		}
+		$this->_config = $config;
+	}
+
+	public function setMapOptions($options) {
+		if (empty($options)) {
+			return false;
+		}
+		$this->_options = $options;
 	}
 }
